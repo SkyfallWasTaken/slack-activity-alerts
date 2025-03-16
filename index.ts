@@ -65,4 +65,3 @@ const sendActivity = async () => {
 };
 
 new Cron(env.CRON, { timezone: env.TIMEZONE }, sendActivity);
-sendActivity();
