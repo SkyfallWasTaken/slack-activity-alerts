@@ -10,6 +10,7 @@ const env = type({
   SLACK_WORKSPACE: "string",
   TIMEZONE: "string",
   CRON: "string = '59 23 * * *'",
+  "MONITORING_URL?": "string.url",
   "+": "delete",
 })(process.env);
 
@@ -65,4 +66,9 @@ const sendActivity = async () => {
 };
 
 new Cron(env.CRON, { timezone: env.TIMEZONE }, sendActivity);
+if (env.MONITORING_URL !== undefined) {
+  new Cron("* * * * *", async () => {
+    await fetch(env.MONITORING_URL as string);
+  });
+}
 console.log("Started cron job");
