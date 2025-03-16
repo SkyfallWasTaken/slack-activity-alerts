@@ -68,7 +68,9 @@ const sendActivity = async () => {
 new Cron(env.CRON, { timezone: env.TIMEZONE }, sendActivity);
 if (env.MONITORING_URL !== undefined) {
   new Cron("* * * * *", async () => {
-    await fetch(env.MONITORING_URL as string);
+    try {
+      await fetch(env.MONITORING_URL as string);
+    } catch {}
   });
 }
 console.log("Started cron job");
