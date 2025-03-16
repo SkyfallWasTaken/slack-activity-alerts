@@ -9,7 +9,7 @@ const env = type({
   SLACK_OWNER_ID: "string.upper",
   SLACK_WORKSPACE: "string",
   TIMEZONE: "string",
-  CRON: "string = '55 23 * * *'",
+  CRON: "string = '59 23 * * *'",
   "+": "delete",
 })(process.env);
 
@@ -65,3 +65,4 @@ const sendActivity = async () => {
 };
 
 new Cron(env.CRON, { timezone: env.TIMEZONE }, sendActivity);
+console.log("Started cron job");
