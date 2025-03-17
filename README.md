@@ -1,4 +1,10 @@
-# slack-activity-webhook
+# Activity Alerts for Slack
+
+Track messages sent by a user in a Slack workspace and send a notification to a webhook!
+
+![image](https://hc-cdn.hel1.your-objectstorage.com/s/v3/67581c57793c4b03d732bc0150a1b3d62c0a7d63_image.png)
+
+## Setup/Development
 
 To install dependencies:
 
@@ -6,10 +12,10 @@ To install dependencies:
 bun install
 ```
 
-To run:
+Copy `.env.example` to `.env` and fill in the values.
+
+Finally, run the bot:
 
 ```bash
-bun run index.ts
+bun .
 ```
-
-This project was created using `bun init` in bun v1.2.5. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
