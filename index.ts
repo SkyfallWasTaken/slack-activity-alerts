@@ -59,22 +59,30 @@ const sendActivity = async () => {
   const messagesSentYesterday = await keyv.get(yesterday);
   console.log(`Messages sent: ${messagesSent}`);
 
+  const difference =
+    messagesSentYesterday !== undefined
+      ? messagesSent - messagesSentYesterday
+      : 0;
+  const emoji =
+    messagesSentYesterday !== undefined
+      ? difference > 0
+        ? ":chart_with_upwards_trend:"
+        : ":chart_with_downwards_trend:"
+      : ":chart_with_upwards_trend:";
+  const message = `${emoji} <@${
+    env.SLACK_OWNER_ID
+  }> has sent *${messagesSent} messages* today.${
+    difference
+      ? ` _(${difference} ${difference > 0 ? "more" : "less"} than yesterday)_`
+      : ""
+  }`;
   const webhookResponse = await fetch(env.SLACK_WEBHOOK_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      text:
-        messagesSentYesterday !== undefined
-          ? `:chart_with_upwards_trend: <@${
-              env.SLACK_OWNER_ID
-            }> has sent *${messagesSent} messages* today _(${Math.abs(
-              messagesSent - messagesSentYesterday
-            )} ${
-              messagesSent - messagesSentYesterday > 0 ? "more" : "less"
-            } than yesterday)_`
-          : `:chart_with_upwards_trend: <@${env.SLACK_OWNER_ID}> has sent *${messagesSent} messages* today.`,
+      text: message,
     }),
   });
   if (!webhookResponse.ok) {
