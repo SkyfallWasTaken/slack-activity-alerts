@@ -69,9 +69,9 @@ const sendActivity = async () => {
         messagesSentYesterday !== undefined
           ? `:chart_with_upwards_trend: <@${
               env.SLACK_OWNER_ID
-            }> has sent *${messagesSent} messages* today _(${
+            }> has sent *${messagesSent} messages* today _(${Math.abs(
               messagesSent - messagesSentYesterday
-            } ${
+            )} ${
               messagesSent - messagesSentYesterday > 0 ? "more" : "less"
             } than yesterday)_`
           : `:chart_with_upwards_trend: <@${env.SLACK_OWNER_ID}> has sent *${messagesSent} messages* today.`,
