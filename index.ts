@@ -1,6 +1,8 @@
 import { Cron } from "croner";
 import { type } from "arktype";
 import { Temporal } from "@js-temporal/polyfill";
+import Keyv from "keyv";
+import KeyvRedis from "@keyv/redis";
 
 const env = type({
   SLACK_WEBHOOK_URL: "string.url",
@@ -11,6 +13,7 @@ const env = type({
   TIMEZONE: "string",
   CRON: "string = '59 23 * * *'",
   "MONITORING_URL?": "string.url",
+  "REDIS_URL?": "string.url",
   "+": "delete",
 })(process.env);
 
@@ -18,6 +21,10 @@ if (env instanceof type.errors) {
   console.error(env.summary);
   process.exit(1);
 }
+
+const keyv = new Keyv<number>(
+  env.REDIS_URL !== undefined ? new KeyvRedis(env.REDIS_URL) : undefined
+);
 
 const sendActivity = async () => {
   console.log("Calling search API...");
@@ -49,6 +56,7 @@ const sendActivity = async () => {
     pagination: { total_count: number };
   };
   const messagesSent = data.pagination.total_count;
+  const messagesSentYesterday = await keyv.get(yesterday);
   console.log(`Messages sent: ${messagesSent}`);
 
   const webhookResponse = await fetch(env.SLACK_WEBHOOK_URL, {
@@ -57,12 +65,23 @@ const sendActivity = async () => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      text: `:chart_with_upwards_trend: <@${env.SLACK_OWNER_ID}> has sent *${messagesSent} messages* today.`,
+      text:
+        messagesSentYesterday !== undefined
+          ? `:chart_with_upwards_trend: <@${
+              env.SLACK_OWNER_ID
+            }> has sent *${messagesSent} messages* today _(${
+              messagesSent - messagesSentYesterday
+            } ${
+              messagesSent - messagesSentYesterday > 0 ? "more" : "less"
+            } than yesterday)_`
+          : `:chart_with_upwards_trend: <@${env.SLACK_OWNER_ID}> has sent *${messagesSent} messages* today.`,
     }),
   });
   if (!webhookResponse.ok) {
     throw new Error("Failed to send webhook");
   }
+
+  await keyv.set(today.toString(), messagesSent);
 };
 
 new Cron(env.CRON, { timezone: env.TIMEZONE }, sendActivity);
