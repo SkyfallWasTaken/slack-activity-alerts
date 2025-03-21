@@ -22,6 +22,11 @@ if (env instanceof type.errors) {
   process.exit(1);
 }
 
+const searchResults = type({
+  ok: "true",
+	pagination: { total_count: "number" },
+});
+
 const keyv = new Keyv<number>(
   env.REDIS_URL !== undefined ? new KeyvRedis(env.REDIS_URL) : undefined
 );
@@ -52,12 +57,14 @@ const sendActivity = async () => {
       method: "POST",
     }
   );
-  const data = (await response.json()) as {
-    pagination: { total_count: number };
-  };
+  const data = searchResults(await response.json());
+  if (data instanceof type.errors) {
+    throw new Error(data.summary);
+  }
   const messagesSent = data.pagination.total_count;
-  const messagesSentYesterday = await keyv.get(yesterday);
   console.log(`Messages sent: ${messagesSent}`);
+  const messagesSentYesterday = await keyv.get(yesterday);
+  console.log(`Messages sent yesterday: ${messagesSentYesterday}`);
 
   const difference =
     messagesSentYesterday !== undefined
@@ -90,6 +97,7 @@ const sendActivity = async () => {
   }
 
   await keyv.set(today.toString(), messagesSent);
+  console.log("Finished job run!\n")
 };
 
 new Cron(env.CRON, { timezone: env.TIMEZONE }, sendActivity);
