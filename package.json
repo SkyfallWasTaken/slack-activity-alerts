@@ -1,22 +1,25 @@
 {
-  "name": "slack-activity-webhook",
-  "module": "index.ts",
-  "type": "module",
-  "private": true,
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
-  },
-  "dependencies": {
-    "@js-temporal/polyfill": "^0.4.4",
-    "@keyv/redis": "^4.3.2",
-    "arktype": "^2.1.9",
-    "croner": "^9.0.0",
-    "keyv": "^5.3.2"
-  },
-  "scripts": {
-    "start": "bun ."
-  }
+	"name": "slack-activity-webhook",
+	"module": "index.ts",
+	"type": "module",
+	"private": true,
+	"devDependencies": {
+		"@biomejs/biome": "^1.9.4",
+		"@types/bun": "latest"
+	},
+	"peerDependencies": {
+		"typescript": "^5"
+	},
+	"dependencies": {
+		"@js-temporal/polyfill": "^0.4.4",
+		"@keyv/redis": "^4.3.2",
+		"arktype": "^2.1.9",
+		"croner": "^9.0.0",
+		"keyv": "^5.3.2"
+	},
+	"scripts": {
+		"start": "bun .",
+		"format": "biome format --write",
+		"check": "biome check"
+	}
 }
