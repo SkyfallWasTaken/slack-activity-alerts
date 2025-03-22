@@ -1,7 +1,8 @@
 import { Temporal } from "@js-temporal/polyfill";
-import KeyvRedis from "@keyv/redis";
 import { type } from "arktype";
 import { Cron } from "croner";
+
+import KeyvRedis from "@keyv/redis";
 import Keyv from "keyv";
 
 const env = type({
