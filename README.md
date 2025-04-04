@@ -19,3 +19,7 @@ Finally, run the bot:
 ```bash
 bun .
 ```
+
+---
+
+&copy; 2025 Mahad Kalam. Licensed under MIT _or_ Apache License 2.0, at your option.
