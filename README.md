@@ -12,7 +12,7 @@ To install dependencies:
 bun install
 ```
 
-Copy `.env.example` to `.env` and fill in the values.
+Copy `.env.example` to `.env` and fill in the values. Make sure your xoxc and xoxd are **not** URL-encoded!
 
 Finally, run the bot:
 
